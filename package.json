@@ -13,6 +13,7 @@
     "commit": "01edee56d47a145090320e72e4ecbb7241de291e"
   },
   "dependencies": {
+    "axios": "^1.4.0",
     "jest": "^29.6.1"
   }
 }
