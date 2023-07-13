@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const linksExtract = require('markdown-link-extractor');
 const axios = require('axios');
-
+const { pathExists } = require('./functions.js')
 // La función debe retornar una promesa que resuelva a un arreglo de objetos
 const mdLinks = (filePath, validate) => {
   let absPath;
@@ -17,7 +17,7 @@ const mdLinks = (filePath, validate) => {
       //Si es una carpeta extraer el archivo sólo si es extensión md
     } else {
       //Si la ruta no existe rechaza la promesa
-      reject('Error: Path does not exist');
+      reject(new Error ('Error: Path does not exist'));
     }
   })
   //Leer el archivo encontrado
