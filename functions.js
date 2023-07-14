@@ -7,28 +7,11 @@ const pathExists = (filePath) => {
         return path.resolve(filePath)
     }
     else {
-        throw new Error("Path does not exist");
+        throw new Error('Path does not exist');
     }
 };
 //console.log(pathExists("README.js"));
 
-//If path belongs to a folder, only extract .md files
-const obtainMdFiles = (absPath) => {
-    return new Promise((resolve, reject) => {
-        fs.readdir(absPath, (err, files) => {
-            if (err) {
-                reject(new Error('Not able to read the folder'));
-            } else {
-                const archivosMd = files.filter(file => absPath.extname(file) === '.md');
-                if (archivosMd.length === 0) {
-                    reject(new Error('No ".md" files found'));
-                } else {
-                    resolve(readMdFile(mdFile));
-                }
-            }
-        });
-    });
-};
 
 
 //Read File
@@ -57,25 +40,30 @@ const extractLinks = (data, mdFile) => {
     const regex = /\[(.+?)\]\((https?:\/\/[^\s]+)\)/g;
     const linksObj = [];
     let match;
+    let founLinks;
 
     while ((match = regex.exec(data))) {
         const href = match[2];
         const text = match[1];
         linksObj.push({ href, text, file: mdFile });
+        founLinks = true;
+    } //Error si no encuentra links 
+    if (!founLinks){
+        throw new Error('No links were found');
     }
 
     return linksObj;
 };
 
-readMdFile("librerias.md")
+/*readMdFile("Librerias1 copy.md")
     .then((links) => {
         console.log(links); // Aquí se muestra el resultado completo de la promesa
     })
     .catch((error) => {
         console.error(error);
-    });
+    });*/
 
 
 module.exports = {
-    pathExists, readMdFile, obtainMdFiles
+    pathExists, readMdFile
 };

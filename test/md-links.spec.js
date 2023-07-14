@@ -8,7 +8,7 @@ describe('mdLinks', () => {
   });
   it('Debe rechazar la promesa si la ruta no existe', () => {
     return mdLinks('./estelink/noexiste.md').catch((error) => {
-      expect(error).toBe('Error: La ruta no existe');
+      expect(error).toBe('Path does not exist');
     });
   });
 });
