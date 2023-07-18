@@ -11,7 +11,7 @@ const emptyFile = 'test\\empty.md';
 
 describe('mdLinks', () => {
   it('should return a promise', () => {
-    const result = mdLinks('test\\Librerias1.md');
+    const result = mdLinks(testPath);
     expect(result).toBeInstanceOf(Promise);
   })
   it('Should throw error if no path is given in the function', () => {
@@ -43,13 +43,14 @@ describe('pathExists', () => {
   it('Should return the absolute path', () => {
     expect(pathExists(testPath)).toEqual(path.resolve(testPath))
   })
-  it('Should throw error if the path does not exist', () => {
-    expect(() => pathExists('./ruta/noexiste.md')).toThrowError('Path does not exist');
-  })
 });
 
 
 describe('readMdFile', () => {
+  it('should return a promise', () => {
+    const result = readMdFile(testPath);
+    expect(result).toBeInstanceOf(Promise);
+  })
   it('Should throw error if the file is empty', () => {
     expect(() => readMdFile(emptyFile)).rejects.toThrowError('This .md file is empty');
   })
@@ -62,4 +63,27 @@ describe('readMdFile', () => {
       expect(data.length).toBeGreaterThan(0);
     });
   })
+});
+
+describe('extractLinks', () => {
+  it('should return a promise', () => {
+    const data = '[Repositorio Oficial Axios](https://github.com/axios/axios)';
+    const result = extractLinks(data, testPath);
+    expect(result).toBeInstanceOf(Promise);
+  })
+  it('should reject with an error if there are no links in the data', () => {
+    const data = 'This has no links.';
+    return expect(extractLinks(data, noLinks)).rejects.toThrowError('No links were found');
+  })
+  it('should resolve an array with the links found (href, text, file path)', () => {
+    const data = '[Repositorio Oficial Axios](https://github.com/axios/axios)';
+    return expect(extractLinks(data, testPath)).resolves.toEqual(expect.arrayContaining([expect.objectContaining
+      ({
+        href: 'https://github.com/axios/axios',
+        text: 'Repositorio Oficial Axios',
+        file: 'test\\Librerias1.md',
+      }),
+    ])
+    );
+  });
 });

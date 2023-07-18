@@ -11,12 +11,9 @@ const mdLinks = (filePath, validate) => {
         reject(new Error('Path does not exist'));
       } else {
         readMdFile(filePath)
-.then((data) => {
-    resolve(extractLinks(data, filePath));
-})
-.then((links) => {
-    console.log(links);
-})
+          .then((data) => {
+            resolve(extractLinks(data, filePath));
+          })
           .catch((error) => {
             reject(error);
           });
@@ -24,7 +21,6 @@ const mdLinks = (filePath, validate) => {
     }
   });
 };
-
 
 
 

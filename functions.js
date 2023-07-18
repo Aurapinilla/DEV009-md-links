@@ -7,9 +7,6 @@ const pathExists = (filePath) => {
     if (fs.existsSync(filePath)) {
         return path.resolve(filePath)
     }
-    else {
-        throw new Error('Path does not exist');
-    }
 };
 //console.log(pathExists('test\\Libreras1.md'));
 
@@ -74,7 +71,7 @@ const extractLinks = (data, filePath) => {
 //Option to validate links: yes/no
 
 //Status of links is validated with axios
-const validateLinks = (link) => {
+/*const validateLinks = (link) => {
     return new Promise((resolve, reject) => {
         //const linksArr = extractLinks(data, filePath);
         axios.get(link)
@@ -87,7 +84,7 @@ const validateLinks = (link) => {
             })
     })
 };
-/*validateLinks('https://nodejs.dev/learn/build-an-express-app')
+validateLinks('https://nodejs.dev/learn/build-an-express-app')
     .then((status) => {
         console.log('Estado: ', status);
     })
