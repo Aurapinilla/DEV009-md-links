@@ -1,38 +1,29 @@
-const fs = require('fs');
-const path = require('path');
-const axios = require('axios');
-const { pathExists, readMdFile } = require('./functions.js')
+const { pathExists, readMdFile } = require('./functions.js');
+
 // La función debe retornar una promesa que resuelva a un arreglo de objetos
 const mdLinks = (filePath) => {
-  const absPath = pathExists(filePath);
-  //const mdFile = obtainMdFiles(absPath);
-  return readMdFile(absPath)
-    /*.then(function (result) {
-      return extractLinks(result, mdFile)
-    })
-    .then(function (links) {
-      if (links.length === 0) {
-        throw new Error('No links found :(')
+  return new Promise((resolve, reject) => {
+    if (!filePath) {
+      reject(new Error('Please provide a file path'));
+    } else {
+      const absPath = pathExists(filePath);
+      if (!absPath) {
+        reject(new Error('Path does not exist'));
       } else {
-        return links;
+        readMdFile(absPath)
+          .then((links) => {
+            resolve(links);
+          })
+          .catch((error) => {
+            reject(error);
+          });
       }
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-      throw error;
-    });*/
-
+    }
+  });
 };
 
 
 
-mdLinks("Librerias1.md")
-  .then((links) => {
-    console.log(links); // Aquí se muestra el resultado completo de la promesa
-  })
-  .catch((error) => {
-    console.error(error);
-  });
 
 module.exports = {
   mdLinks

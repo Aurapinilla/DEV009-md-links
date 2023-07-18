@@ -6,24 +6,21 @@ const pathExists = (filePath) => {
     if (fs.existsSync(filePath)) {
         return path.resolve(filePath)
     }
-    else {
-        throw new Error('Path does not exist');
-    }
 };
-//console.log(pathExists("README.js"));
+console.log(pathExists("test\\Librerias1.md"));
 
 
 
 //Read File
-const readMdFile = (mdFile) => {
+const readMdFile = (filePath) => {
     return new Promise((resolve, reject) => {
-        fs.readFile(mdFile, 'utf8', (err, data) => {
+        fs.readFile(filePath, 'utf8', (err, data) => {
             if (err) {
                 reject(new Error('Not able to read the file'))
             } else {
-                const fileExt = path.extname(mdFile);
+                const fileExt = path.extname(filePath);
                 if (fileExt === '.md') {
-                    resolve(extractLinks(data, mdFile));
+                    resolve(extractLinks(data, filePath));
                 }
                 else {
                     reject(new Error('This is not a Markdown File'));
@@ -36,34 +33,28 @@ const readMdFile = (mdFile) => {
     });
 };
 //Extract Links from a file
-const extractLinks = (data, mdFile) => {
-    const regex = /\[(.+?)\]\((https?:\/\/[^\s]+)\)/g;
-    const linksObj = [];
-    let match;
-    let founLinks;
+const extractLinks = (data, filePath) => {
+    return new Promise((resolve, reject) => {
+        const regex = /\[(.+?)\]\((https?:\/\/[^\s]+)\)/g;
+        const linksObj = [];
+        let match;
+        let foundLinks = false;
 
-    while ((match = regex.exec(data))) {
-        const href = match[2];
-        const text = match[1];
-        linksObj.push({ href, text, file: mdFile });
-        founLinks = true;
-    } //Error si no encuentra links 
-    if (!founLinks){
-        throw new Error('No links were found');
-    }
-
-    return linksObj;
+        while ((match = regex.exec(data))) {
+            const href = match[2];
+            const text = match[1];
+            linksObj.push({ href, text, file: filePath });
+            foundLinks = true;
+        }
+        if (foundLinks) {
+            resolve(linksObj); // Resuelve la promesa con los links encontrados
+        } else {
+            reject(new Error('No links were found')); // Rechaza la promesa con un error si no hay links
+        }
+    });
 };
-
-/*readMdFile("Librerias1 copy.md")
-    .then((links) => {
-        console.log(links); // Aquí se muestra el resultado completo de la promesa
-    })
-    .catch((error) => {
-        console.error(error);
-    });*/
 
 
 module.exports = {
-    pathExists, readMdFile
+    pathExists, readMdFile, extractLinks
 };
