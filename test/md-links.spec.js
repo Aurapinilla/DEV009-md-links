@@ -1,9 +1,12 @@
+const path = require('path');
 const { mdLinks } = require('../index.js');
+const { pathExists, readMdFile, extractLinks } = require('../functions.js');
+
 
 const testPath = 'test\\Librerias1.md';
 const noLinks = 'test\\No_Links.md';
 const noMdFile = './package.json';
-const invalidmd = 'test\\Invalid.md';
+const emptyFile = 'test\\empty.md';
 
 
 describe('mdLinks', () => {
@@ -12,21 +15,19 @@ describe('mdLinks', () => {
     expect(result).toBeInstanceOf(Promise);
   })
   it('Should throw error if no path is given in the function', () => {
-    return expect(mdLinks()).rejects.toThrowError('Please provide a file path')
+    expect(() => mdLinks()).rejects.toThrowError('Please provide a file path')
   })
   it('Should reject Promise if the path does not exist', () => {
-    return expect(mdLinks('./ruta/noexiste.md')).rejects.toThrowError('Path does not exist');
+    expect(() => mdLinks('./ruta/noexiste.md')).rejects.toThrowError('Path does not exist');
   })
-  it('Should return error if the function cannot read the .md file', () => {
-    return expect(mdLinks(invalidmd)).rejects.toThrowError('Not able to read the file');
+  it('Should return error if the .md file is empty', () => {
+    expect(() => mdLinks(emptyFile)).rejects.toThrowError('This .md file is empty');
   })
   it('Should return error if the file is not .md extension', () => {
-    return expect(mdLinks(noMdFile)).rejects.toThrowError('This is not a Markdown File');
+    expect(() => mdLinks(noMdFile)).rejects.toThrowError('This is not a Markdown File');
   })
   it('Should return error if there are no links in the .md file', () => {
-    return mdLinks(noLinks).catch((error) => {
-      expect(error).toEqual(new Error('No links were found'));
-    })
+    expect(() => mdLinks(noLinks)).rejects.toThrowError('No links were found');
   })
   it('Should resolve an array with the links found (href, text, file path)', () => {
     return expect(mdLinks(testPath)).resolves.toEqual(expect.arrayContaining([expect.objectContaining({
@@ -34,5 +35,31 @@ describe('mdLinks', () => {
       text: expect.any(String),
       file: expect.any(String)
     })]))
+  })
+});
+
+
+describe('pathExists', () => {
+  it('Should return the absolute path', () => {
+    expect(pathExists(testPath)).toEqual(path.resolve(testPath))
+  })
+  it('Should throw error if the path does not exist', () => {
+    expect(() => pathExists('./ruta/noexiste.md')).toThrowError('Path does not exist');
+  })
+});
+
+
+describe('readMdFile', () => {
+  it('Should throw error if the file is empty', () => {
+    expect(() => readMdFile(emptyFile)).rejects.toThrowError('This .md file is empty');
+  })
+  it('Should throw error if it is not a Markdown file', () => {
+    expect(() => readMdFile(noMdFile)).rejects.toThrowError('This is not a Markdown File');
+  })
+  it('Should read the content of the .md file', () => {
+    return readMdFile(testPath).then((data) => {
+      expect(data).toEqual(expect.any(String));
+      expect(data.length).toBeGreaterThan(0);
+    });
   })
 });

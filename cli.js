@@ -3,9 +3,9 @@ const { mdLinks } = require('./index.js')
 const testPath = 'test\\Librerias1.md';
 const noLinks = 'test\\No_Links.md';
 const noMdFile = './package.json';
-const invalidmd = 'test\\Invalid.md';
+const emptyFile = 'test\\empty.md';
 
-mdLinks(testPath)
+mdLinks(emptyFile)
   .then((links) => {
     console.log(links);
   })
