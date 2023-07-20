@@ -74,10 +74,22 @@ const validateLinks = (arrLinks) => {
             })
     );
     //Promise.all para esperar a que aplique la validación a todos los links encontrados
-    return Promise.all(linkValidation);
+    return Promise.all(linkValidation)
+    .then((linkValidation) => {
+        const validMessage = linkValidation.map((linkObj) => {
+            if (linkObj.status >= 200 && linkObj.status < 400) {
+                linkObj.message = 'ok'
+                return linkObj;
+            } else {
+                linkObj.message = 'fail'
+                return linkObj;
+            }
+        });
+        return validMessage;
+    })
 };
 
-const message = (arrValidation) => {
+/*const message = (arrValidation) => {
     const validMessage = arrValidation.map((linkObj) => {
         if (linkObj.status >= 200 && linkObj.status < 400) {
             linkObj.message = 'ok'
@@ -88,16 +100,14 @@ const message = (arrValidation) => {
         }
     });
     return validMessage;
-}
+}*/
 
-readMdFile('test\\Librerias1.md')
-    .then((data) => extractLinks(data, 'test\\Librerias1.md'))
+readMdFile('./README.md')
+    .then((data) => extractLinks(data, './README.md'))
     .then((links) => validateLinks(links))
     .then((addStatus) => {
         console.log(addStatus);
-        return message(addStatus);
     })
-    .then((result) => console.log(result))
     .catch((error) => {
         console.error(error);
     });
