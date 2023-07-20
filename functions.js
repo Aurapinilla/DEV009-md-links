@@ -44,7 +44,7 @@ const extractLinks = (data, filePath) => {
         while ((match = regex.exec(data))) {
             const href = match[2];
             const text = match[1];
-            linksObj.push({ href, text, file: filePath, status: null });
+            linksObj.push({ href, text, file: filePath, status: null, message: null });
             foundLinks = true;
         }
         if (foundLinks) {
@@ -73,41 +73,36 @@ const validateLinks = (arrLinks) => {
                 return linkObj;
             })
     );
-
+    //Promise.all para esperar a que aplique la validación a todos los links encontrados
     return Promise.all(linkValidation);
 };
+
+const message = (arrValidation) => {
+    const validMessage = arrValidation.map((linkObj) => {
+        if (linkObj.status >= 200 && linkObj.status < 400) {
+            linkObj.message = 'ok'
+            return linkObj;
+        } else {
+            linkObj.message = 'fail'
+            return linkObj;
+        }
+    });
+    return validMessage;
+}
 
 readMdFile('test\\Librerias1.md')
     .then((data) => extractLinks(data, 'test\\Librerias1.md'))
     .then((links) => validateLinks(links))
     .then((addStatus) => {
-        console.log(addStatus); // Verás los enlaces con las propiedades status actualizadas
+        console.log(addStatus);
+        return message(addStatus);
     })
+    .then((result) => console.log(result))
     .catch((error) => {
         console.error(error);
     });
 
 
-/*return Promise.all(linkStatusPromises)
-        .then((statuses) => {
-            // Aquí puedes trabajar con los resultados de la validación
-            console.log(statuses); // Un array con los códigos de estado de cada link
-            return statuses;
-        })
-        .catch((error) => {
-            console.error(error);
-            return [];
-        });
-};*/
-
-
-/*validateLinks('https://axios-http.com/docs/introd')
-    .then((status) => {
-        console.log('Status: ', status);
-    })
-    .catch((error) => {
-        console.error('Status: ', error);
-    });*/
 
 module.exports = {
     pathExists, readMdFile, extractLinks
