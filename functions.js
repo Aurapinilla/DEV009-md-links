@@ -44,7 +44,7 @@ const extractLinks = (data, filePath) => {
         while ((match = regex.exec(data))) {
             const href = match[2];
             const text = match[1];
-            linksObj.push({ href, text, file: filePath });
+            linksObj.push({ href, text, file: filePath, status: null });
             foundLinks = true;
         }
         if (foundLinks) {
@@ -55,43 +55,59 @@ const extractLinks = (data, filePath) => {
     });
 };
 
-/*readMdFile('test\\Librerias1.md')
-.then((data) => {
-    return extractLinks(data, 'test\\Librerias1.md')
-})
-.then((links) => {
-    console.log(links);
-})
-.catch((error) => {
-    console.error(error);
-})*/
-
 
 
 //Option to validate links: yes/no
 
 //Status of links is validated with axios
-/*const validateLinks = (link) => {
-    return new Promise((resolve, reject) => {
-        //const linksArr = extractLinks(data, filePath);
-        axios.get(link)
-            .then((result) => {
-                resolve(result.status);
-
+const validateLinks = (arrLinks) => {
+    const linkValidation = arrLinks.map((linkObj) =>
+        axios
+            .get(linkObj.href)
+            .then((response) => {
+                linkObj.status = response.status;
+                return linkObj;
             })
             .catch((error) => {
-                reject(error);
+                linkObj.status = error.response.status;
+                return linkObj;
             })
-    })
+    );
+
+    return Promise.all(linkValidation);
 };
-validateLinks('https://nodejs.dev/learn/build-an-express-app')
-    .then((status) => {
-        console.log('Estado: ', status);
+
+readMdFile('test\\Librerias1.md')
+    .then((data) => extractLinks(data, 'test\\Librerias1.md'))
+    .then((links) => validateLinks(links))
+    .then((addStatus) => {
+        console.log(addStatus); // Verás los enlaces con las propiedades status actualizadas
     })
     .catch((error) => {
         console.error(error);
-    });*/
+    });
 
+
+/*return Promise.all(linkStatusPromises)
+        .then((statuses) => {
+            // Aquí puedes trabajar con los resultados de la validación
+            console.log(statuses); // Un array con los códigos de estado de cada link
+            return statuses;
+        })
+        .catch((error) => {
+            console.error(error);
+            return [];
+        });
+};*/
+
+
+/*validateLinks('https://axios-http.com/docs/introd')
+    .then((status) => {
+        console.log('Status: ', status);
+    })
+    .catch((error) => {
+        console.error('Status: ', error);
+    });*/
 
 module.exports = {
     pathExists, readMdFile, extractLinks

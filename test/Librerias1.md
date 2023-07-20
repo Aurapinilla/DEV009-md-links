@@ -7,8 +7,8 @@ Este archivo markdown contiene información general sobre algunas de las librer�
 
 Express es un framework web rápido, minimalista y flexible para Node.js. Es una de las librerías más populares y ampliamente utilizadas para la creación de aplicaciones web y APIs en Node.js.
 
-***Sitio Web Oficial de Express:*** (Link Inválido)  [Sitio Oficial Express - INVALIDO](https://expressjs.coms/)
-***Tutorial de Express en Node.js.dev:*** [Tutorial de Express](https://nodejs.dev/learn/build-an-express-app)
+***Sitio Web Oficial de Express:*** (Link Inválido)  [Sitio Oficial Express](https://expressjs.com/es/)
+***Tutorial de Express en Node.js.dev:*** [Tutorial de Express - INVÁLIDO](https://nodejs.dev/learn/build-an-express-app)
 
 
 ### Axios
