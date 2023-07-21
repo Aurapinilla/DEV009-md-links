@@ -5,7 +5,7 @@ const noLinks = 'test\\No_Links.md';
 const noMdFile = './package.json';
 const emptyFile = 'test\\empty.md';
 
-mdLinks(testPath, true)
+mdLinks(testPath, testPath)
   .then((links) => {
     console.log(links);
   })

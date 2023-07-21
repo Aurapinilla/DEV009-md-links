@@ -89,20 +89,8 @@ const validateLinks = (arrLinks) => {
     })
 };
 
-/*const message = (arrValidation) => {
-    const validMessage = arrValidation.map((linkObj) => {
-        if (linkObj.status >= 200 && linkObj.status < 400) {
-            linkObj.message = 'ok'
-            return linkObj;
-        } else {
-            linkObj.message = 'fail'
-            return linkObj;
-        }
-    });
-    return validMessage;
-}
 
-readMdFile('./README.md')
+/*readMdFile('./README.md')
     .then((data) => extractLinks(data, './README.md'))
     .then((links) => validateLinks(links))
     .then((addStatus) => {

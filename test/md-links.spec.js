@@ -1,6 +1,6 @@
 const path = require('path');
 const { mdLinks } = require('../index.js');
-const { pathExists, readMdFile, extractLinks } = require('../functions.js');
+const { pathExists, readMdFile, extractLinks, validateLinks } = require('../functions.js');
 
 
 const testPath = 'test\\Librerias1.md';
@@ -29,11 +29,31 @@ describe('mdLinks', () => {
   it('Should return error if there are no links in the .md file', () => {
     expect(() => mdLinks(noLinks)).rejects.toThrowError('No links were found');
   })
+  it('Should resolve an array with the links found (href, text, file path) when validate is undefined', () => {
+    return expect(mdLinks(testPath)).resolves.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          href: expect.any(String),
+          text: expect.any(String),
+          file: expect.any(String),
+        }),
+      ])
+    );
+  })
   it('Should resolve an array with the links found (href, text, file path)', () => {
-    return expect(mdLinks(testPath)).resolves.toEqual(expect.arrayContaining([expect.objectContaining({
+    return expect(mdLinks(testPath, false)).resolves.toEqual(expect.arrayContaining([expect.objectContaining({
       href: expect.any(String),
       text: expect.any(String),
       file: expect.any(String)
+    })]))
+  })
+  it('Should resolve an array with the links found (href, text, file, status, message)', () => {
+    return expect(mdLinks(testPath, true)).resolves.toEqual(expect.arrayContaining([expect.objectContaining({
+      href: expect.any(String),
+      text: expect.any(String),
+      file: expect.any(String),
+      status: expect.any(Number),
+      message: expect.stringMatching(/^(ok|fail)$/),
     })]))
   })
 });
@@ -87,3 +107,29 @@ describe('extractLinks', () => {
     );
   });
 });
+
+
+describe('validateLinks', () => {
+  const data = [{
+    href: 'https://jestjs.io/docs/en/configurationnn',
+    text: 'Configuración Jest - INVALIDO',
+    file: 'test\\Librerias1.md'
+  }];
+  it('Should return an array', () => {
+    return validateLinks(data).then(result => {
+      expect(Array.isArray(result)).toBe(true);
+    })
+  });
+  it('Should return an array including href, text, file, status and message', () => {
+    return expect(validateLinks(data)).resolves.toEqual(expect.arrayContaining([expect.objectContaining
+      ({
+        href: expect.any(String),
+        text: expect.any(String),
+        file: expect.any(String),
+        status: expect.any(Number),
+        message: expect.stringMatching(/^(ok|fail)$/),
+      })
+    ]))
+  })
+});
+//Me parece innecesario repetir algunos tests en mdLinks y en las demás funciones
