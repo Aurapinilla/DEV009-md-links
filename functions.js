@@ -11,6 +11,31 @@ const pathExists = (filePath) => {
 //console.log(pathExists('test\\Libreras1.md'));
 
 
+//Is Directory?
+function isDirectory(filePath) {
+    try {
+      const stat = fs.statSync(filePath);
+      if (stat.isDirectory()) {
+        const dirFiles = fs.readdirSync(filePath);
+        dirFiles.forEach((file) => {
+          const fullPath = path.join(filePath, file);
+          const fileStat = fs.statSync(fullPath);
+          if (fileStat.isDirectory()) {
+            isDirectory(fullPath);
+          } else {
+            console.log(fullPath);
+          }
+        });
+      } else {
+        console.log(filePath);
+      }
+    } catch (err) {
+      console.error('Error trying to obtain information from given path:', err.message);
+    }
+  }
+
+isDirectory('test');
+
 //Read File
 const readMdFile = (filePath) => {
     return new Promise((resolve, reject) => {
@@ -56,9 +81,6 @@ const extractLinks = (data, filePath) => {
 };
 
 
-
-//Option to validate links: yes/no
-
 //Status of links is validated with axios
 const validateLinks = (arrLinks) => {
     const linkValidation = arrLinks.map((linkObj) =>
@@ -75,18 +97,18 @@ const validateLinks = (arrLinks) => {
     );
     //Promise.all para esperar a que aplique la validación a todos los links encontrados
     return Promise.all(linkValidation)
-    .then((linkValidation) => {
-        const validMessage = linkValidation.map((linkObj) => {
-            if (linkObj.status >= 200 && linkObj.status < 400) {
-                linkObj.message = 'ok'
-                return linkObj;
-            } else {
-                linkObj.message = 'fail'
-                return linkObj;
-            }
-        });
-        return validMessage;
-    })
+        .then((linkValidation) => {
+            const validMessage = linkValidation.map((linkObj) => {
+                if (linkObj.status >= 200 && linkObj.status < 400) {
+                    linkObj.message = 'ok'
+                    return linkObj;
+                } else {
+                    linkObj.message = 'fail'
+                    return linkObj;
+                }
+            });
+            return validMessage;
+        })
 };
 
 

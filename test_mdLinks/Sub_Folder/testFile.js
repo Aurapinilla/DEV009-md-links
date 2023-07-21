@@ -1,0 +1,1 @@
+console.log('Function should ignore me');
