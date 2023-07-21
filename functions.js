@@ -100,7 +100,7 @@ const validateLinks = (arrLinks) => {
         }
     });
     return validMessage;
-}*/
+}
 
 readMdFile('./README.md')
     .then((data) => extractLinks(data, './README.md'))
@@ -110,10 +110,10 @@ readMdFile('./README.md')
     })
     .catch((error) => {
         console.error(error);
-    });
+    });*/
 
 
 
 module.exports = {
-    pathExists, readMdFile, extractLinks
+    pathExists, readMdFile, extractLinks, validateLinks
 };
