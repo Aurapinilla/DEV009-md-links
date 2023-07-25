@@ -21,7 +21,7 @@ describe('mdLinks', () => {
     expect(() => mdLinks('./ruta/noexiste.md')).rejects.toThrowError('Path does not exist');
   })
   it('Should return error if the .md file is empty', () => {
-    expect(() => mdLinks(emptyFile)).rejects.toThrowError('This .md file is empty');
+    expect(() => mdLinks(emptyFile)).rejects.toThrowError('This markdown file is empty');
   })
   it('Should return error if the file is not .md extension', () => {
     expect(() => mdLinks(noMdFile)).rejects.toThrowError('This is not a Markdown File');
@@ -39,23 +39,25 @@ describe('mdLinks', () => {
         }),
       ])
     );
-  })
-  it('Should resolve an array with the links found (href, text, file path)', () => {
+  });
+
+  it('Should resolve an array with the links found (href, text, file path) when validate is false', () => {
     return expect(mdLinks(testPath, false)).resolves.toEqual(expect.arrayContaining([expect.objectContaining({
       href: expect.any(String),
       text: expect.any(String),
-      file: expect.any(String)
-    })]))
-  })
-  it('Should resolve an array with the links found (href, text, file, status, message)', () => {
+      file: expect.any(String),
+    })]));
+  });
+
+  it('Should resolve an array with the links found (href, text, file, status, message) when validate is true', () => {
     return expect(mdLinks(testPath, true)).resolves.toEqual(expect.arrayContaining([expect.objectContaining({
       href: expect.any(String),
       text: expect.any(String),
       file: expect.any(String),
       status: expect.any(Number),
       message: expect.stringMatching(/^(ok|fail)$/),
-    })]))
-  })
+    })]));
+  });
 });
 
 

@@ -1,36 +1,27 @@
-const { pathExists, readMdFile, extractLinks, validateLinks } = require('./functions.js');
+const { pathAbs, pathType, pathExists, checkMd, readFile, validateLinks } = require('./functions.js');
 
-// La función debe retornar una promesa que resuelva a un arreglo de objetos
-const mdLinks = (filePath, validate) => {
+function mdLinks(path, options) {
   return new Promise((resolve, reject) => {
-    if (!filePath) {
-      reject(new Error('Please provide a file path'));
-    } else {
-      const absPath = pathExists(filePath);
-      if (!absPath) {
-        reject(new Error('Path does not exist'));
-      } else {
-        readMdFile(filePath)
-          .then((data) => extractLinks(data, filePath))
-          .then((links) => {
-            if (validate) {
-              return validateLinks(links);
-            }
-            return links.map(({href, text, file}) => ({ href, text, file }));
-          })
-          .then((result) => {
-            resolve(result);
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      }
-    }
+    if (!path || typeof path !== 'string') reject('Please enter a valid path');
+  
+    let absolutePath = pathAbs(path);
+    pathExists(absolutePath)
+      .then((() => pathType(absolutePath)))
+      .then(((files) => checkMd(files)))
+      .then((files) => {
+        return (options !== true)
+        ? readFile(files)
+        : readFile(files)
+          .then((links) => Promise.all(links.map(link => validateLinks(link))));
+      })
+      .then((links) => {
+        const linksArr = links.flat()
+        linksArr.length === 0 ? reject('No links were found') : resolve(linksArr);
+      })
+      .catch(error => {
+        reject(error);
+      });
   });
-};
+}
 
-
-
-module.exports = {
-  mdLinks
-};
+module.exports = { mdLinks }
