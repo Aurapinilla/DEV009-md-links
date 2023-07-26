@@ -10,7 +10,7 @@ function pathExists(filePath) {
     return new Promise((resolve, reject) => {
         fs.stat(filePath, (err) => {
             (err)
-                ? reject('Path does not exist', err) : resolve(true)
+                ? reject(new Error('Path does not exist')) : resolve(true);
         });
     });
 }
@@ -40,15 +40,15 @@ function readDir(path, arrayOfFiles = []) {
     return arrayOfFiles
 }
 
-function checkMd(filePath) {
-    return new Promise((resolve, reject) => {
-        const fileArray = Array.isArray(filePath) ? filePath : [filePath];
-        const markdownPaths = fileArray.filter(path => pathImpt.extname(path) === '.md');
+function checkMd(filePaths) {
+    const fileArr = Array.isArray(filePaths) ? filePaths : [filePaths];
+    const mdPaths = fileArr.filter(path => pathImpt.extname(path) === '.md');
 
-        (markdownPaths.length > 0)
-            ? resolve(markdownPaths)
-            : reject(('No markdown files were found'));
-    })
+    return new Promise((resolve, reject) => {
+        (mdPaths.length > 0)
+            ? resolve(mdPaths)
+            : reject(new Error('No markdown files were found'));
+    });
 }
 
 function readFile(files) {
@@ -56,9 +56,13 @@ function readFile(files) {
     const promises = fileArray.map(file => {
         return new Promise((resolve, reject) => {
             fs.readFile(file, 'utf-8', (err, data) => {
-                (err)
-                    ? reject(err)
-                    : resolve(extractLinks(file, data))
+                if (err) {
+                    reject(err);
+                } else {
+                    extractLinks(file, data)
+                        .then(links => resolve(links))
+                        .catch(error => reject(error));
+                }
             });
         });
     });
@@ -77,7 +81,7 @@ function extractLinks(path, data) {
             file: path,
         });
     }
-    return infoLinks
+    return Promise.resolve(infoLinks);
 }
 
 function validateLinks(links) {
@@ -85,12 +89,12 @@ function validateLinks(links) {
     const promises = fileArr.map(link => {
         return axios.head(link.href)
             .then((response) => {
-                const validation = { status: response.status, statusText: response.statusText }
+                const validation = { status: response.status, message: response.statusText }
                 Object.assign(link, validation);
                 return link
             })
             .catch((error) => {
-                const validation = { status: error.response ? error.response.status : 'no response', statusText: 'fail' };
+                const validation = { status: error.response ? error.response.status : 'no response', message: 'fail' };
                 Object.assign(link, validation);
                 return link;
             });

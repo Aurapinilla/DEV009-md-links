@@ -3,7 +3,6 @@ const { mdLinks } = require('./index');
 const testPath = 'test\\Librerias1.md';
 const noLinks = 'test\\No_Links.md';
 const noMdFile = './package.json';
-const emptyFile = 'test\\empty.md';
 const folderPath = './test_mdLinks';
 
 console.log("Calling mdLinks...");

@@ -2,7 +2,7 @@ const { pathAbs, pathType, pathExists, checkMd, readFile, validateLinks } = requ
 
 function mdLinks(path, options) {
   return new Promise((resolve, reject) => {
-    if (!path || typeof path !== 'string') reject('Please enter a valid path');
+    if (!path || typeof path !== 'string') reject('Please provide a valid path');
   
     let absolutePath = pathAbs(path);
     pathExists(absolutePath)
