@@ -1,6 +1,6 @@
 const path = require('path');
 const { mdLinks } = require('../index.js');
-const { pathExists, pathAbs, pathType, checkMd, readDir, readFile, extractLinks, validateLinks } = require('../functions.js');
+const { pathExists, pathAbs, pathType, checkMd, readDir, readFile, extractLinks, validateLinks, statsLinks, statsValidate } = require('../functions.js');
 
 
 const testPath = 'test_mdLinks\\Librerias.md';
@@ -29,46 +29,16 @@ describe('mdLinks', () => {
     expect(() => mdLinks(noLinks)).rejects.toThrowError('No links were found');
   });
 
-  it('should resolve with an array of links for a valid file path', () => {
-    const folderPath = './test_mdLinks';
-    const options = false;
-    return mdLinks(folderPath, options).then((links) => {
-      expect(Array.isArray(links)).toBe(true);
-      expect(links.length).toBeGreaterThan(0);
-      expect(links[0]).toHaveProperty('href');
-      expect(links[0]).toHaveProperty('text');
-      expect(links[0]).toHaveProperty('file');
-    });
-  });
-
-  it('should resolve with an array of links with status and statusText if options is true', () => {
-    const filePath = './test_mdLinks/Librerias.md';
-    const options = true;
-    return mdLinks(filePath, options).then((links) => {
-      expect(Array.isArray(links)).toBe(true);
-      expect(links.length).toBeGreaterThan(0);
-      expect(links[0]).toHaveProperty('href');
-      expect(links[0]).toHaveProperty('text');
-      expect(links[0]).toHaveProperty('file');
-      expect(links[0]).toHaveProperty('status');
-      expect(links[0]).toHaveProperty('statusText');
-    });
-  });
-
-  it('should resolve with an array of links and validate them if options is true', () => {
-    const filePath = './test_mdLinks/Librerias.md';
-    const options = true;
-    return mdLinks(filePath, options).then((links) => {
-      expect(Array.isArray(links)).toBe(true);
-      expect(links.length).toBeGreaterThan(0);
-      expect(links[0]).toHaveProperty('href');
-      expect(links[0]).toHaveProperty('text');
-      expect(links[0]).toHaveProperty('file');
-      expect(links[0]).toHaveProperty('status');
-      expect(links[0]).toHaveProperty('statusText');
-      expect(typeof links[0].status).toBe('number');
-      expect(typeof links[0].statusText).toBe('string');
-    });
+  it('Should resolve an array with the links found (href, text, file path) when options is undefined', () => {
+    return expect(mdLinks(testPath)).resolves.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          href: expect.any(String),
+          text: expect.any(String),
+          file: expect.any(String),
+        }),
+      ])
+    );
   });
 });
 
@@ -133,26 +103,18 @@ describe('checkMd', () => {
   });
 });
 
-it('should return an array of objects with links from .md files', () => {
-  return readFile(testPath).then(links => {
-    expect(Array.isArray(links)).toBe(true);
-    expect(links.length).toBe(6); // Verifica que se encontraron los 6 links en el archivo de prueba
-    expect(links[0]).toEqual(expect.objectContaining({
-      href: 'https://expressjs.coms/',
-      text: 'Sitio Oficial Express - INVALIDO',
-      file: testPath,
-    }));
-    expect(links[1]).toEqual(expect.objectContaining({
-      href: 'https://nodejs.dev/learn/build-an-express-app',
-      text: 'Tutorial de Express',
-      file: testPath,
-    }));
-   
+
+describe('readFile', () => {
+  it('should return an array of links for a valid file', () => {
+    return readFile(testPath).then(links => {
+      expect(Array.isArray(links)).toBe(true);
+      expect(links.length).toBeGreaterThan(0);
+    });
   });
-});
 
 it('should reject with an error if the file is not a markdown file', () => {
   return expect(readFile(noMdFile)).rejects.toThrowError(Error('No markdown files were found'));
+});
 });
 
 

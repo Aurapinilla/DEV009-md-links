@@ -102,6 +102,21 @@ function validateLinks(links) {
     return Promise.all(promises);
 }
 
+function statsLinks(links) {
+    return {
+        'Total': links.length,
+        'Unique': new Set(links.map((link) => link.href)).size
+    }
+  }
+  
+  function statsValidate(links) {
+    const broken = links.filter((link) => link.message === 'fail').length;
+    return {
+        'Total': links.length,
+        'Unique': new Set(links.map((link) => link.href)).size,
+        'Broken': broken,
+    }
+  }
 
 module.exports =
 {
@@ -112,5 +127,7 @@ module.exports =
     readDir,
     readFile,
     extractLinks,
-    validateLinks
+    validateLinks,
+    statsLinks,
+    statsValidate
 }

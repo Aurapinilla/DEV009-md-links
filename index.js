@@ -1,12 +1,12 @@
 const { pathAbs, pathType, pathExists, checkMd, readFile, validateLinks } = require('./functions.js');
 
-function mdLinks(path, options) {
+function mdLinks(pathFile, options) {
   return new Promise((resolve, reject) => {
-    if (!path || typeof path !== 'string') reject('Please provide a valid path');
+    if (!pathFile || typeof pathFile !== 'string') reject('Please provide a valid path');
   
-    let absolutePath = pathAbs(path);
-    pathExists(absolutePath)
-      .then((() => pathType(absolutePath)))
+    let absPath = pathAbs(pathFile);
+    pathExists(absPath)
+      .then((() => pathType(absPath)))
       .then(((files) => checkMd(files)))
       .then((files) => {
         return (options !== true)

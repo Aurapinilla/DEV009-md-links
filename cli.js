@@ -1,17 +1,26 @@
-const { mdLinks } = require('./index');
+#!/usr/bin/env node
+const { mdLinks } = require('./index.js');
+const { statsValidate, statsLinks } = require('./functions.js');
+const path = process.argv[2]
+const options = process.argv;
 
-const testPath = 'test\\Librerias1.md';
-const noLinks = 'test\\No_Links.md';
-const noMdFile = './package.json';
-const folderPath = './test_mdLinks';
+let validate = options.includes('--validate');
+let stats = options.includes('--stats');
 
-console.log("Calling mdLinks...");
-mdLinks(folderPath, true)
-  .then((links) => {
-    console.log("mdLinks resolved:");
-    console.log(links);
-  })
-  .catch((error) => {
-    console.error("mdLinks rejected:");
-    console.error(error);
-  });
+
+mdLinks(path, validate).then(links => {
+  if (stats && validate) {
+    console.log(statsValidate(links));
+  } else if (stats) {
+    console.log(statsLinks(links));
+  } else if(validate){
+    links.forEach(link => {
+        const { href, message, status, text, file } = link;
+        console.log(`${file} ${href} ${message} ${status} ${text}`);
+      });
+  }else if(options[3] === undefined){
+    console.log( links)
+  }
+  }).catch(error => {
+    console.error('Error:', error.message);
+});
