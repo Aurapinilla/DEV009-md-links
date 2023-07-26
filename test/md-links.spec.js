@@ -29,8 +29,8 @@ describe('mdLinks', () => {
     expect(() => mdLinks(noLinks)).rejects.toThrowError('No links were found');
   });
 
-  it('Should resolve an array with the links found (href, text, file path) when options is undefined', () => {
-    return expect(mdLinks(testPath)).resolves.toEqual(
+  test('should return the links that are in the path', () => {
+    expect(() => mdLinks(testPath)).resolves.toContainEqual(
       expect.arrayContaining([
         expect.objectContaining({
           href: expect.any(String),

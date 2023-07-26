@@ -22,5 +22,5 @@ mdLinks(path, validate).then(links => {
     console.log( links)
   }
   }).catch(error => {
-    console.error('Error:', error.message);
+    console.error('Error:', error);
 });
