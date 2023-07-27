@@ -1,5 +1,5 @@
 {
-  "name": "md-links",
+  "name": "mdlinks-aurapinilla",
   "version": "0.1.0",
   "engines": {
     "node": ">=16.x"
@@ -16,7 +16,12 @@
     "axios": "^1.4.0",
     "jest": "^29.6.1"
   },
+  "author": "Aura Pinilla",
   "bin": {
     "md-links": "./cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Aurapinilla/DEV009-md-links"
   }
 }
