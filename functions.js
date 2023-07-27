@@ -2,24 +2,30 @@ const pathImpt = require('path');
 const fs = require('fs');
 const axios = require('axios');
 
+//Función para retornar el path absoluto
 function pathAbs(filePath) {
     return pathImpt.isAbsolute(filePath) ? filePath : pathImpt.resolve(filePath)
 }
 
+//Función que verifica si el path existe
 function pathExists(filePath) {
     return new Promise((resolve, reject) => {
         fs.stat(filePath, (err) => {
-            (err)
-                ? reject(new Error('Path does not exist')) : resolve(true);
+            if (err) {
+                reject(new Error('Path does not exist'));
+            } else {
+                resolve(filePath);
+            }
         });
     });
 }
 
+//Función que verifica si el path es de un archivo o directorio
 function pathType(filePath) {
     return new Promise((resolve, reject) => {
         fs.stat(filePath, (err, stats) => {
             if (err) {
-                reject(err);
+                reject(new Error('Not able to read the path'));
             } else {
                 resolve(stats.isFile() ? filePath : readDir(filePath));
             }
@@ -27,19 +33,21 @@ function pathType(filePath) {
     });
 }
 
-function readDir(path, arrayOfFiles = []) {
+//Función que lee el contenido de un directorio
+function readDir(path, filesArr = []) {
     const files = fs.readdirSync(path);
     files.forEach((file) => {
-        const filePath = pathImpt.join(path, file),
+        const filePath = pathImpt.join(path, file),//Obtener el path completo
             stat = fs.statSync(filePath);
 
         (stat.isDirectory())
-            ? readDir(filePath, arrayOfFiles)
-            : arrayOfFiles.push(filePath)
+            ? readDir(filePath, filesArr)
+            : filesArr.push(filePath)
     })
-    return arrayOfFiles
+    return filesArr
 }
 
+//Función que verifica que la extensión del/los archivos sea .md
 function checkMd(filePaths) {
     const fileArr = Array.isArray(filePaths) ? filePaths : [filePaths];
     const mdPaths = fileArr.filter(path => pathImpt.extname(path) === '.md');
@@ -51,14 +59,13 @@ function checkMd(filePaths) {
     });
 }
 
+//Función que lee el contenido del archivo .md
 function readFile(files) {
     const fileArray = Array.isArray(files) ? files : [files];
     const promises = fileArray.map(file => {
         return new Promise((resolve, reject) => {
             fs.readFile(file, 'utf-8', (err, data) => {
-                if (err) {
-                    reject(err);
-                } else {
+                if (!err) {
                     extractLinks(file, data)
                         .then(links => resolve(links))
                         .catch(error => reject(error));
@@ -66,24 +73,26 @@ function readFile(files) {
             });
         });
     });
-    return Promise.all(promises);
+    return Promise.all(promises);//Promise.all para esperar a que se ejecuten todas las promesas
 }
 
+//Función que devuelve un array con los links encontrados
 function extractLinks(path, data) {
     const regex = /\[(.*?)\]\((https?:\/\/.*?)\)/g;
     let matches;
-    const infoLinks = [];
+    const linksFound = [];
 
     while ((matches = regex.exec(data))) {
-        infoLinks.push({
+        linksFound.push({
             href: matches[2],
             text: matches[1],
             file: path,
         });
     }
-    return Promise.resolve(infoLinks);
+    return Promise.resolve(linksFound);
 }
 
+//Función que valida el estatus de los links con axios
 function validateLinks(links) {
     const fileArr = Array.isArray(links) ? links : [links];
     const promises = fileArr.map(link => {
@@ -102,24 +111,24 @@ function validateLinks(links) {
     return Promise.all(promises);
 }
 
+//Funciones que genera las estadísticas de los links
 function statsLinks(links) {
     return {
         'Total': links.length,
         'Unique': new Set(links.map((link) => link.href)).size
     }
-  }
-  
-  function statsValidate(links) {
+}
+
+function statsValidate(links) {
     const broken = links.filter((link) => link.message === 'fail').length;
     return {
         'Total': links.length,
         'Unique': new Set(links.map((link) => link.href)).size,
         'Broken': broken,
     }
-  }
+}
 
-module.exports =
-{
+module.exports = {
     pathAbs,
     pathExists,
     pathType,
@@ -130,4 +139,4 @@ module.exports =
     validateLinks,
     statsLinks,
     statsValidate
-}
+};

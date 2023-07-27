@@ -2,26 +2,29 @@ const { pathAbs, pathType, pathExists, checkMd, readFile, validateLinks } = requ
 
 function mdLinks(pathFile, options) {
   return new Promise((resolve, reject) => {
-    if (!pathFile || typeof pathFile !== 'string') reject('Please provide a valid path');
-  
+    if (!pathFile || typeof pathFile !== 'string') {
+      reject(new Error('Please provide a valid path'));
+      return;
+    }
     let absPath = pathAbs(pathFile);
     pathExists(absPath)
       .then((() => pathType(absPath)))
       .then(((files) => checkMd(files)))
       .then((files) => {
         return (options !== true)
-        ? readFile(files)
-        : readFile(files)
-          .then((links) => Promise.all(links.map(link => validateLinks(link))));
+          ? readFile(files)
+          : readFile(files)
+            .then((links) => Promise.all(links.map(link => validateLinks(link))));
       })
       .then((links) => {
-        const linksArr = links.flat()
-        linksArr.length === 0 ? reject('No links were found') : resolve(linksArr);
+        const linksArr = links.flat();
+        return linksArr.length === 0 ? Promise.reject('No links were found') : Promise.resolve(linksArr);
       })
-      .catch(error => {
-        reject(error);
-      });
-  });
+      .then(resolve) // Devolvemos el resultado de los links
+      .catch(reject); // Manejamos el error
+    });
 }
+    
+
 
 module.exports = { mdLinks }

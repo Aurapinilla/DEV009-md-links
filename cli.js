@@ -9,18 +9,18 @@ let stats = options.includes('--stats');
 
 
 mdLinks(path, validate).then(links => {
-  if (stats && validate) {
-    console.log(statsValidate(links));
-  } else if (stats) {
-    console.log(statsLinks(links));
-  } else if(validate){
-    links.forEach(link => {
-        const { href, message, status, text, file } = link;
-        console.log(`${file} ${href} ${message} ${status} ${text}`);
-      });
-  }else if(options[3] === undefined){
-    console.log( links)
-  }
-  }).catch(error => {
-    console.error('Error:', error);
+    if (stats && validate) {
+        console.log(statsValidate(links));
+    } else if (stats) {
+        console.log(statsLinks(links));
+    } else if (validate) {
+        links.forEach(link => {
+            const { href, message, status, text, file } = link;
+            console.log(`${file} ${href} ${message} ${status} ${text}`);
+        });
+    } else if (options[3] === undefined) {
+        console.log(links)
+    }
+}).catch(error => {
+    console.error(error);
 });
