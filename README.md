@@ -4,8 +4,7 @@
 
 * [1. Preámbulo](#1-preámbulo)
 * [2. Resumen del proyecto](#2-resumen-del-proyecto)
-* [3. Diagrama de flujo Md-Links](#3-diagrama-de-flujo-md-links)
-* [4. Cómo usar](#4-como-usar)
+* [3. Cómo usar](#3-como-usar)
 ***
 
 ## 1. Preámbulo
@@ -45,11 +44,8 @@ El proyecto consta de varias funciones y módulos que realizan las siguientes ta
 
 En resumen, md-links es una herramienta que facilita el análisis y validación de enlaces en archivos Markdown, proporcionando información útil para verificar la integridad de los enlaces y ayudando a los usuarios a mantener actualizada la documentación y los enlaces en sus proyectos.
 
-## 3. Diagrama de flujo Md-Links
 
-![Diagrama de flujo]('mdLinks Flow.drawio.png')
-
-## 4. Cómo usar
+## 3. Cómo usar
 
 **Uso básico:** El usuario puede utilizar md-links para analizar archivos Markdown y extraer los enlaces que contienen. El comando básico que deberá poner en su terminal es:
 
