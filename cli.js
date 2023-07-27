@@ -1,8 +1,10 @@
 #!/usr/bin/env node
+//Indica que el archivo debe ser interpretado por Node
+
 const { mdLinks } = require('./index.js');
 const { statsValidate, statsLinks } = require('./functions.js');
-const path = process.argv[2]
-const options = process.argv;
+const path = process.argv[2];
+const options = process.argv; //contiene los argumentos de la linea de comandos
 
 let validate = options.includes('--validate');
 let stats = options.includes('--stats');
@@ -18,9 +20,9 @@ mdLinks(path, validate).then(links => {
             const { href, message, status, text, file } = link;
             console.log(`${file} ${href} ${message} ${status} ${text}`);
         });
-    } else if (options[3] === undefined) {
+    } else if (options[3] === undefined || !validate) {
         console.log(links)
     }
 }).catch(error => {
-    console.error(error);
+    console.error('Error:', error);
 });

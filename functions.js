@@ -4,7 +4,7 @@ const axios = require('axios');
 
 //Función para retornar el path absoluto
 function pathAbs(filePath) {
-    return pathImpt.isAbsolute(filePath) ? filePath : pathImpt.resolve(filePath)
+    return pathImpt.isAbsolute(filePath) ? filePath : pathImpt.resolve(filePath);
 }
 
 //Función que verifica si el path existe
@@ -33,7 +33,7 @@ function pathType(filePath) {
     });
 }
 
-//Función que lee el contenido de un directorio
+//Función que lee el contenido de un directorio y devuelve arr con los archivos encontrados
 function readDir(path, filesArr = []) {
     const files = fs.readdirSync(path);
     files.forEach((file) => {
@@ -44,12 +44,12 @@ function readDir(path, filesArr = []) {
             ? readDir(filePath, filesArr)
             : filesArr.push(filePath)
     })
-    return filesArr
+    return filesArr;
 }
 
 //Función que verifica que la extensión del/los archivos sea .md
 function checkMd(filePaths) {
-    const fileArr = Array.isArray(filePaths) ? filePaths : [filePaths];
+    const fileArr = Array.isArray(filePaths) ? filePaths : [filePaths];//Asegurar que sea Array
     const mdPaths = fileArr.filter(path => pathImpt.extname(path) === '.md');
 
     return new Promise((resolve, reject) => {
@@ -61,7 +61,7 @@ function checkMd(filePaths) {
 
 //Función que lee el contenido del archivo .md
 function readFile(files) {
-    const fileArray = Array.isArray(files) ? files : [files];
+    const fileArray = Array.isArray(files) ? files : [files];//Asegurar que sea Array
     const promises = fileArray.map(file => {
         return new Promise((resolve, reject) => {
             fs.readFile(file, 'utf-8', (err, data) => {
@@ -94,9 +94,9 @@ function extractLinks(path, data) {
 
 //Función que valida el estatus de los links con axios
 function validateLinks(links) {
-    const fileArr = Array.isArray(links) ? links : [links];
+    const fileArr = Array.isArray(links) ? links : [links];//Asegurar que sea Array
     const promises = fileArr.map(link => {
-        return axios.head(link.href)
+        return axios.head(link.href)//axios.head me trae solo el encabezado de la respuesta
             .then((response) => {
                 const validation = { status: response.status, message: response.statusText }
                 Object.assign(link, validation);
@@ -116,15 +116,15 @@ function statsLinks(links) {
     return {
         'Total': links.length,
         'Unique': new Set(links.map((link) => link.href)).size
+        //new Set crea una colección de valores únicos
     }
 }
 
 function statsValidate(links) {
-    const broken = links.filter((link) => link.message === 'fail').length;
     return {
         'Total': links.length,
         'Unique': new Set(links.map((link) => link.href)).size,
-        'Broken': broken,
+        'Broken': links.filter((link) => link.message === 'fail').length,
     }
 }
 

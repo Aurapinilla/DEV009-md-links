@@ -34,13 +34,39 @@ describe('mdLinks', () => {
       });
   });
   
-  it('Should add status and ok properties when validate is true', () => {
+  it('Should return links if validate is undefined', () => {
     return expect(mdLinks(folderPath)).resolves.toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           href: expect.any(String),
           text: expect.any(String),
           file: expect.any(String),
+        }),
+      ])
+    );
+  });
+
+  it('Should return links if validate is false', () => {
+    return expect(mdLinks(folderPath, false)).resolves.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          href: expect.any(String),
+          text: expect.any(String),
+          file: expect.any(String),
+        }),
+      ])
+    );
+  });
+
+  it('Should return links validation if validation is true', () => {
+    return expect(mdLinks(folderPath, true)).resolves.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          file: expect.any(String),
+          href: expect.any(String),
+          message: expect.stringMatching(/^(ok|fail)$/),
+          status: expect.any(Number),
+          text: expect.any(String),
         }),
       ])
     );
