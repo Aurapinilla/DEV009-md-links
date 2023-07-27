@@ -1,10 +1,11 @@
 {
   "name": "mdlinks-aurapinilla",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "engines": {
     "node": ">=16.x"
   },
   "scripts": {
+    "lint": "eslint .",
     "test": "jest --coverage"
   },
   "bootcamp": {
@@ -23,5 +24,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Aurapinilla/DEV009-md-links"
+  },
+  "devDependencies": {
+    "eslint": "^8.45.0"
   }
 }
