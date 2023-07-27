@@ -47,7 +47,7 @@ En resumen, md-links es una herramienta que facilita el análisis y validación 
 
 ## 3. Diagrama de flujo Md-Links
 
-![Diagrama de flujo]('./mdLinks Flow.drawio.png')
+![Diagrama de flujo]('mdLinks Flow.drawio.png')
 
 ## 4. Cómo usar
 
