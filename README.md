@@ -4,7 +4,8 @@
 
 * [1. Preámbulo](#1-preámbulo)
 * [2. Resumen del proyecto](#2-resumen-del-proyecto)
-* [3. Cómo usar](#3-como-usar)
+* [3. Cómo usar](#3-cómo-usar)
+* [4. Paquete NPM](#4-paquete-npm)
 ***
 
 ## 1. Preámbulo
@@ -97,3 +98,6 @@ Broken: 1
 
 **Resultados en la consola:** Al ejecutar el comando con las opciones deseadas, md-links mostrará en la consola los resultados del análisis. Dependiendo de las opciones utilizadas, el usuario obtendrá una lista de enlaces encontrados con sus detalles, estadísticas sobre los enlaces o ambas cosas.
 
+## 4. Paquete NPM
+
+Encuentra el paquete listo para descargar en npm en el siguiente [Link](https://www.npmjs.com/package/mdlinks-aurapinilla)
