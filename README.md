@@ -6,7 +6,8 @@
 * [2. Resumen del proyecto](#2-resumen-del-proyecto)
 * [3. Cómo usar](#3-cómo-usar)
 * [4. Paquete NPM](#4-paquete-npm)
-***
+
+---
 
 ## 1. Preámbulo
 
